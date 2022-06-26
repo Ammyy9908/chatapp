@@ -1,10 +1,12 @@
 import React from "react";
+import { connect } from "react-redux";
+import useUser from "../hooks/useUser";
 import logout from "../utils/logout";
+import DeafultUser from "./Icons/DeafultUser";
 import styles from "./Sidebar.module.css";
 import Story from "./Story";
 import UserChat from "./UserChat";
-function Sidebar({ setProfile, photoURL, user, setNewChat }) {
-  console.log(user);
+function Sidebar({ setProfile, setNewChat, user }) {
   const [hide_btn, setHideButton] = React.useState(false);
   const [more, setMore] = React.useState(false);
 
@@ -30,14 +32,20 @@ function Sidebar({ setProfile, photoURL, user, setNewChat }) {
   return (
     <div className={styles.sidebar}>
       <div className={styles.sidebar__header}>
-        <div
-          className={`${styles.user__avatar} cursor-pointer`}
-          onClick={() => {
-            setProfile(user);
-          }}
-        >
-          <img src={photoURL} alt="user__avatar" />
-        </div>
+        {user && (
+          <div
+            className={`${styles.user__avatar} cursor-pointer`}
+            onClick={() => {
+              setProfile(user);
+            }}
+          >
+            {user.avatar ? (
+              <img src={user && user.avatar} alt="user__avatar" />
+            ) : (
+              <DeafultUser />
+            )}
+          </div>
+        )}
         <div className="header_btns flex gap-3 items-center">
           <button className="new_chat_btn" onClick={() => setNewChat(true)}>
             <img src="/svg/new-chat.svg" alt="new-chat-icon" />
@@ -122,4 +130,8 @@ function Sidebar({ setProfile, photoURL, user, setNewChat }) {
   );
 }
 
-export default Sidebar;
+const mapStateToProps = (state) => ({
+  user: state.appReducer.user,
+});
+
+export default connect(mapStateToProps, null)(Sidebar);

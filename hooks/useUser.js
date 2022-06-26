@@ -10,7 +10,7 @@ function useUser() {
       let u = await getCurrentUserData(auth_user ? auth_user.uid : null);
       setUser(u);
     };
-    getUser();
+    auth_user && getUser();
   }, [auth_user]);
   return user;
   return <div>useUser</div>;

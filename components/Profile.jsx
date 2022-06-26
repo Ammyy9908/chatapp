@@ -4,15 +4,28 @@ import { AiFillCamera } from "react-icons/ai";
 import bytesToSize from "../utils/getFileSize";
 import uploadFile from "../utils/uploadFile";
 import useUser from "../hooks/useUser";
-function Profile({ setProfile, profile }) {
-  console.log(profile);
-  const { uid } = profile;
+import { connect } from "react-redux";
+import getCurrentUserData from "../utils/getUser";
+import DeafultUser from "./Icons/DeafultUser";
+import updateAvatar from "../utils/updateUserAvatar";
+function Profile({ setProfile, profile, setWebCam, user, setUser }) {
+  console.log(user, "user");
+  const uid = user && user.uid;
   console.log(uid);
   const [avatar_option, setAvatarOption] = React.useState(false);
   const [uploading, setUploading] = React.useState(false);
-  const [avatar, setAvatar] = React.useState(profile.photoURL);
 
-  let user = useUser();
+  const refreshUser = () => {
+    getCurrentUserData(uid)
+      .then((u) => {
+        console.log(u);
+        setUser(u);
+      })
+      .catch((e) => {
+        console.log(`Error in refershing the user`, e);
+      });
+  };
+
   // handle avatar upload
   const handleAvatarUpload = (e) => {
     e.preventDefault();
@@ -27,19 +40,33 @@ function Profile({ setProfile, profile }) {
       }
       // now we can upload the image
       uploadFile(
-        profile.uid,
+        uid,
         name,
         "avatars",
 
         setUploading,
         file,
-        setAvatar
+        refreshUser
       ).then((done) => {
         if (done) {
           console.log("upload success");
         }
       });
     }
+  };
+
+  const handleDelete = () => {
+    updateAvatar(uid, { avatar: null })
+      .then((done) => {
+        if (done) {
+          refreshUser();
+        } else {
+          alert("Error in deleting the avatar");
+        }
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   };
   return (
     <div
@@ -58,7 +85,7 @@ function Profile({ setProfile, profile }) {
         <div className={styles.animatable}>
           <div className={styles.user_section}>
             <div className={styles.user__avatar}>
-              <img src={user.avatar} alt="" />
+              {user.avatar ? <img src={user.avatar} alt="" /> : <DeafultUser />}
               <div
                 className={styles.profile__avatar_overlay}
                 onClick={() => setAvatarOption(!avatar_option)}
@@ -80,7 +107,7 @@ function Profile({ setProfile, profile }) {
                     <button>View photo</button>
                   </li>
                   <li>
-                    <button>Take photo</button>
+                    <button onClick={() => setWebCam(true)}>Take photo</button>
                   </li>
                   <li>
                     <button>
@@ -97,7 +124,7 @@ function Profile({ setProfile, profile }) {
                     </button>
                   </li>
                   <li>
-                    <button>Remove photo</button>
+                    <button onClick={handleDelete}>Remove photo</button>
                   </li>
                 </ul>
               </div>
@@ -138,4 +165,12 @@ function Profile({ setProfile, profile }) {
   );
 }
 
-export default Profile;
+const mapStateToProps = (state) => ({
+  user: state.appReducer.user,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  setUser: (user) => dispatch({ type: "SET_USER", user }),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Profile);

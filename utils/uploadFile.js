@@ -15,7 +15,7 @@ export default async function uploadFile(
   folder_name,
   setUploading,
   file,
-  setAvatar
+  refreshUser
 ) {
   const storageRef = ref(storage, `${folder_name}/${uid}/${filename}`);
   const uploadTask = uploadBytesResumable(storageRef, file);
@@ -51,6 +51,7 @@ export default async function uploadFile(
         updateAvatar(uid, { avatar: url }).then((done) => {
           if (done) {
             console.log("Profile Photo Changed");
+            refreshUser();
           }
         });
       });
