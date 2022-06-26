@@ -1,0 +1,39 @@
+.chat {
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 565px;
+  align-items: flex-end;
+  margin-left: auto;
+}
+
+.chat_text {
+  padding: 12px;
+  border-radius: 5px;
+  background-color: #bdd2b6;
+  color: #26272d;
+  width: 565px;
+  position: relative;
+}
+
+.ingoing_chat_text {
+  background-color: #26272d;
+  color: #fff;
+}
+
+.chat_ingoing {
+  align-items: flex-start;
+  margin-left: 0px;
+}
+
+.chat_plygon_right {
+  position: absolute;
+  right: -10px;
+  top: 0;
+}
+.chat_plygon_left {
+  position: absolute;
+  left: -10px;
+  top: 0;
+}

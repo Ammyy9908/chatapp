@@ -1,0 +1,7 @@
+.story {
+  min-width: 48px;
+  height: 48px;
+}
+.active_story {
+  background-color: #141416;
+}
