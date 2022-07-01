@@ -3,12 +3,18 @@ import styles from "./Profile.module.css";
 import { AiFillCamera } from "react-icons/ai";
 import bytesToSize from "../utils/getFileSize";
 import uploadFile from "../utils/uploadFile";
-import useUser from "../hooks/useUser";
 import { connect } from "react-redux";
 import getCurrentUserData from "../utils/getUser";
 import DeafultUser from "./Icons/DeafultUser";
 import updateAvatar from "../utils/updateUserAvatar";
-function Profile({ setProfile, profile, setWebCam, user, setUser }) {
+function Profile({
+  setProfile,
+  profile,
+  setWebCam,
+  user,
+  setUser,
+  setPhotoView,
+}) {
   console.log(user, "user");
   const uid = user && user.uid;
   console.log(uid);
@@ -104,7 +110,13 @@ function Profile({ setProfile, profile, setWebCam, user, setUser }) {
                   }`}
                 >
                   <li>
-                    <button>View photo</button>
+                    <button
+                      onClick={() => {
+                        setPhotoView(true);
+                      }}
+                    >
+                      View photo
+                    </button>
                   </li>
                   <li>
                     <button onClick={() => setWebCam(true)}>Take photo</button>
@@ -151,7 +163,7 @@ function Profile({ setProfile, profile, setWebCam, user, setUser }) {
             <div className={styles.info_wrapper}>
               <p className="text-sm text-gray-400 mb-1">Name</p>
               <div className={styles.info_edit}>
-                <p className="text-white">Sarah Joy</p>
+                <p className="text-white">{user.name}</p>
                 <button>
                   <img src="/svg/pencil.svg" alt="" />
                 </button>
@@ -171,6 +183,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   setUser: (user) => dispatch({ type: "SET_USER", user }),
+  setPhotoView: (photo_view) =>
+    dispatch({ type: "SET_PHOTO_VIEW", photo_view }),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Profile);

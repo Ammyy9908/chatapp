@@ -1,0 +1,43 @@
+.setting_view {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 320px;
+  background-color: #1c1d22;
+  height: 100vh;
+  transform: translateX(-100%);
+  transition: all 0.3s ease-in-out;
+  overflow: hidden;
+}
+
+.setting_view_header {
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.setting_view_enable {
+  transform: translateX(0);
+}
+
+.animatable_left {
+  animation: translateLeft 0.5s ease-in-out 1;
+}
+
+@keyframes translateLeft {
+  0% {
+    transform: translateX(-150px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+.setting_view_options button:hover {
+  background-color: #111111bd;
+  background: linear-gradient(
+    90deg,
+    rgba(219, 203, 154, 0.388) 0%,
+    rgba(255, 207, 62, 0.81) 78.75%
+  );
+}

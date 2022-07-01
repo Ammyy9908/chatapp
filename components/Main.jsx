@@ -2,7 +2,14 @@ import React from "react";
 import Chat from "./Chat";
 import ChatInfo from "./ChatInfo";
 import styles from "./Main.module.css";
-function Main({ emojis }) {
+import { RiUser3Fill } from "react-icons/ri";
+import {
+  BsFileEarmarkFill,
+  BsFillCameraFill,
+  BsFillImageFill,
+} from "react-icons/bs";
+import { connect } from "react-redux";
+function Main({ emojis, attachment_view, setAttachmentView }) {
   const [contact, setContact] = React.useState(false);
   const [emoji, setEmoji] = React.useState(false);
   return (
@@ -84,8 +91,68 @@ function Main({ emojis }) {
                 </div>
               )}
             </button>
-            <button>
+            <button
+              className="relative"
+              tabIndex={0}
+              onClick={() => {
+                setAttachmentView(!attachment_view);
+              }}
+            >
               <img src="/svg/pin.svg" alt="" />
+
+              {attachment_view && (
+                <ul className={`${styles.attchment_options} absolute`}>
+                  <li>
+                    <button
+                      className={`${styles.attachment_button} bg-blue-500`}
+                    >
+                      <div
+                        className={`${styles.button_dark_background} bg-blue-400`}
+                      ></div>
+                      <RiUser3Fill />
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      className={`${styles.attachment_button} bg-indigo-500`}
+                    >
+                      <div
+                        className={`${styles.button_dark_background} bg-indigo-400`}
+                      ></div>
+                      <BsFileEarmarkFill />
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      className={`${styles.attachment_button} bg-pink-500`}
+                    >
+                      <div
+                        className={`${styles.button_dark_background} bg-pink-400`}
+                      ></div>
+                      <BsFillCameraFill />
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      className={`${styles.attachment_button} bg-purple-500`}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <div
+                        className={`${styles.button_dark_background} bg-purple-400`}
+                      ></div>
+                      <label htmlFor="image_video">
+                        <input
+                          type="file"
+                          name="image_video"
+                          id="image_video"
+                          accept="image/jpg,image/jpeg"
+                        />
+                        <BsFillImageFill />
+                      </label>
+                    </button>
+                  </li>
+                </ul>
+              )}
             </button>
             <input
               type="text"
@@ -101,4 +168,13 @@ function Main({ emojis }) {
   );
 }
 
-export default Main;
+const mapDispatchToProps = (dispatch) => ({
+  setAttachmentView: (attachment_view) =>
+    dispatch({ type: "SET_ATTACHMENT_VIEW", attachment_view }),
+});
+
+const mapStateToProps = (state) => ({
+  attachment_view: state.appReducer.attachment_view,
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Main);

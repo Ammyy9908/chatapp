@@ -16,9 +16,12 @@ import NewContact from "../components/NewContact";
 import getCurrentUserData from "../utils/getUser";
 import TakePhoto from "../components/TakePhoto";
 import { connect } from "react-redux";
+import PhotoView from "../components/PhotoView";
+import SettingView from "../components/SettingView";
+import ThemePopUp from "../components/ThemePopUp";
 const database = getFirestore();
 
-function Home({ setUser }) {
+function Home({ setUser, photo_view, setting_view, theme_view }) {
   const [profile, setProfile] = React.useState(false);
   const [new_chat, setNewChat] = React.useState(false);
   const [new_contact, setNewContact] = React.useState(false);
@@ -141,6 +144,9 @@ function Home({ setUser }) {
                 />
               )}
               {webcam && <TakePhoto setWebCam={setWebCam} />}
+              {photo_view && <PhotoView />}
+              <SettingView />
+              {theme_view && <ThemePopUp />}
             </div>
           ) : (
             <div className={styles.auth__screen}>
@@ -164,8 +170,13 @@ function Home({ setUser }) {
   );
 }
 
+const mapStateToProps = (state) => ({
+  photo_view: state.appReducer.photo_view,
+  setting_view: state.appReducer.setting_view,
+  theme_view: state.appReducer.theme_view,
+});
 const mapDispatchToProps = (dispatch) => ({
   setUser: (user) => dispatch({ type: "SET_USER", user }),
 });
 
-export default connect(null, mapDispatchToProps)(Home);
+export default connect(mapStateToProps, mapDispatchToProps)(Home);

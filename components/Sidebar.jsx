@@ -1,14 +1,18 @@
 import React from "react";
 import { connect } from "react-redux";
-import useUser from "../hooks/useUser";
 import logout from "../utils/logout";
 import DeafultUser from "./Icons/DeafultUser";
 import styles from "./Sidebar.module.css";
 import Story from "./Story";
+import { MdPermScanWifi } from "react-icons/md";
 import UserChat from "./UserChat";
-function Sidebar({ setProfile, setNewChat, user }) {
+import Link from "next/link";
+import useNetwork from "../hooks/useNetwork";
+function Sidebar({ setProfile, setNewChat, user, setSettings }) {
   const [hide_btn, setHideButton] = React.useState(false);
   const [more, setMore] = React.useState(false);
+  const [reconnecting, setReconnecting] = React.useState(false);
+  const online = useNetwork();
 
   const handleScroll = (e) => {
     console.log(e.target.scrollLeft);
@@ -69,7 +73,14 @@ function Sidebar({ setProfile, setNewChat, user }) {
                 <button className="list-item">Starred messages</button>
               </li>
               <li>
-                <button className="list-item">Settings</button>
+                <button
+                  className="list-item"
+                  onClick={() => {
+                    setSettings(true);
+                  }}
+                >
+                  Settings
+                </button>
               </li>
               <li>
                 <button className="list-item" onClick={handleLogout}>
@@ -80,6 +91,39 @@ function Sidebar({ setProfile, setNewChat, user }) {
           </button>
         </div>
       </div>
+
+      {!online && (
+        <div className="network_offline_status px-2 w-full py-3 flex flex-col gap-3 items-center text-center bg-indigo-700">
+          <div className="network__status__icon w-12 h-12 bg-yellow-500 flex items-center justify-center rounded-full">
+            <MdPermScanWifi />
+          </div>
+
+          <div className="offline_status__text text-white">
+            {!reconnecting ? (
+              <>
+                <h1>Computer not connected</h1>
+                <p className="text-xs text-gray-300">
+                  Make sure your computer has an active internet conneciion
+                </p>
+
+                <button
+                  className="text-md text-red-500 hover:underline"
+                  onClick={() => {
+                    setReconnecting(true);
+                    setTimeout(() => {
+                      setReconnecting(false);
+                    }, 10000);
+                  }}
+                >
+                  Reconnect
+                </button>
+              </>
+            ) : (
+              <h3>Connecting</h3>
+            )}
+          </div>
+        </div>
+      )}
       <div className={styles.search_section}>
         <div className={styles.search}>
           <input type="text" name="search" id="search" placeholder="Search" />
@@ -133,5 +177,12 @@ function Sidebar({ setProfile, setNewChat, user }) {
 const mapStateToProps = (state) => ({
   user: state.appReducer.user,
 });
+const mapDispatchToProps = (dispatch) => ({
+  setSettings: (setting_view) =>
+    dispatch({
+      type: "SET_SETTING_VIEW",
+      setting_view,
+    }),
+});
 
-export default connect(mapStateToProps, null)(Sidebar);
+export default connect(mapStateToProps, mapDispatchToProps)(Sidebar);
